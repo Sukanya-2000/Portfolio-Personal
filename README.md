@@ -1,5 +1,17 @@
 # Sukanya Bhattacharyya — developer portfolio
 
+## AI assistant
+
+The floating Ask AI widget on the home and contact pages calls `/api/chat` using the OpenAI Responses API. Set `OPENAI_API_KEY` in `.env` or hosting secrets and restart the server. Never use a VITE-prefixed secret. `OPENAI_MODEL` defaults to `gpt-4.1-mini`; the chosen model needs API billing and access in your OpenAI project.
+
+The server grounds answers in `src/config.ts`, `src/data/projects.ts` and `src/data/career.ts`. Include these files in production alongside the server. The assistant is instructed to acknowledge missing information and refer opportunities to `/contact`; generated answers can still contain mistakes. See the [OpenAI text generation documentation](https://developers.openai.com/api/docs/guides/text).
+
+Conversations stay in React memory and clear on reload, navigation or New conversation. Recent turns go to OpenAI with `store: false`; this app does not persist or log chat content. Provider abuse-monitoring retention policies still apply. The UI discloses the provider and renders answers as plain text.
+
+Limits: 2,000 characters per message, five previous turns, 10,000 history characters, 15 requests per IP per 15 minutes, three concurrent requests, 600 output tokens and a 25-second provider timeout. `CHAT_DAILY_LIMIT` defaults to 200 upstream attempts per process per rolling 24 hours. Limits reset on restart; use a shared limiter for multiple instances and provider project spending controls. Configure Express trust proxy for the exact trusted deployment topology before relying on visitor IPs. This is a public endpoint; cross-site browser checks are not authentication.
+
+Run `npm test` for mocked HTTP integration tests covering grounding, provider payload, validation, safe failures and request budgets. Live model access requires a real key and live request; mock tests do not verify it.
+
 React 19, TypeScript, Vite, Tailwind, Motion, Lucide, and Express/Nodemailer.
 
 ## Run
